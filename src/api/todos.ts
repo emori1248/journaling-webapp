@@ -3,10 +3,10 @@ export async function getTodos() {
     return await result.text()
 }
 
-export async function postTodo() {
+export async function postTodo({test, testRequired} : {test: string, testRequired: string}) {
     const result = await fetch("/api/addTodo", {
         method: 'POST',
-        body: JSON.stringify({todo: "new todo name"})
+        body: JSON.stringify({test, testRequired})
     });
     return await result.text()
 }
