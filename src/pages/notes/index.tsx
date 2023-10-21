@@ -36,7 +36,12 @@ export default function NotesPage() {
   return (
     <main className="bg-slate-300 h-screen">
       <div className="pt-4 px-8 w-screen flex justify-end">
-        <button className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white transition text-slate-900 text-xl rounded-md shadow-md">
+        <button
+          className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white transition text-slate-900 text-xl rounded-md shadow-md"
+          onClick={() => {
+            confirm("Are you sure you want to log out?");
+          }}
+        >
           Log Out
         </button>
       </div>
@@ -55,13 +60,21 @@ export default function NotesPage() {
                               {note.name}
                             </h3>
                             <span className="flex text-slate-400 italic justify-items-end text-lg">
-                              Last edited: {dayjs().from(dayjs(parseInt(note.updated_at)))}
+                              Last edited:{" "}
+                              {dayjs().from(dayjs(parseInt(note.updated_at)))}
                             </span>
                           </div>
                         </Link>
                       </div>
 
-                      <button onClick={() => alert("hello")} className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl">
+                      <button
+                        onClick={() =>
+                          confirm(
+                            `Are you sure you want to delete "${note.name}?"`
+                          )
+                        }
+                        className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl"
+                      >
                         <BsFillTrashFill />
                       </button>
                     </div>
