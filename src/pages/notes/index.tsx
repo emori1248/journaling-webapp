@@ -1,3 +1,5 @@
+import { getTodos } from "@/api/todos";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
@@ -9,29 +11,19 @@ import { BsFillTrashFill } from "react-icons/bs";
 dayjs.extend(relativeTime);
 
 export default function NotesPage() {
-  const notes = [
-    {
-      id: "1234abcd",
-      name: "Test note 1",
-      updated_at: "1697900803", // unix timestamp
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-    {
-      id: "5678efgh",
-      name: "Test note 2",
-      updated_at: "1697900806", // unix timestamp
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-    {
-      id: "5678efghi",
-      name: "Test note 3",
-      updated_at: "1697900809", // unix timestamp
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-  ];
+  // const queryClient = useQueryClient();
+
+  const query = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
+
+  // TODO
+  if (!query.data) {
+    return;
+  }
+
+  const { todos } = query.data;
+
+  // TODO
+  if (!todos) return;
 
   return (
     <main className="bg-slate-300 h-screen">
@@ -48,7 +40,7 @@ export default function NotesPage() {
       <div className="w-screen h-auto bg-slate-300 text-slate-900 flex justify-center p-8 pt-4">
         <div className="w-full h-full bg-slate-100 rounded-lg shadow-md p-2">
           <ul className="w-full">
-            {notes.flatMap((note) => {
+            {todos.flatMap((note) => {
               return (
                 <div className="border-b-2 border-slate-200 hover:bg-slate-300 last:border-b-0 px-2 py-1 rounded-md transition">
                   <li key={note.id}>

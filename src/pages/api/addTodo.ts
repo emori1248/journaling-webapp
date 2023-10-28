@@ -2,13 +2,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
-    todo: string;
+    error: string;
 };
 
+// TODO not implemented
 export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
-    res.status(200).json({ todo: "test todo" });
+    // Make sure to change this to 200 from 500 when it's done.
+    res.status(500).json({ error: "Route not implemented" });
     console.log(req.body)
 }
