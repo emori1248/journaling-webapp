@@ -1,8 +1,9 @@
 var pg = require('pg');
+require('dotenv').config()
 //or native libpq bindings
 //var pg = require('pg').native
 
-var conString = "DB_URL_HERE"
+var conString = process.env.DB_CONNECTION_STRING
 var client = new pg.Client(conString);
 client.connect(function(err) {
   if(err) {
