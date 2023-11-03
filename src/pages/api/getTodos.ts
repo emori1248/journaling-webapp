@@ -1,7 +1,8 @@
-import { TodosResponseData } from "@/api/todos";
+import { TodosResponseData, getTodos } from "@/api/todos";
 import { getAuth } from "@clerk/nextjs/server";
 import type { NextApiRequest, NextApiResponse } from "next";
 import {Client} from "pg"
+require('dotenv').config()
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,6 +21,35 @@ export default async function handler(
   const client = new Client({connectionString:conString});
   await client.connect()
 
+  try {
+    const query = {
+      // give the query a unique name
+      name: 'fetch-user',
+      text: 'SELECT * FROM public.posts WHERE user_id = $1',
+      values: [userId],
+    }
+    const rows = (await client.query(query)).rows
+    //console.log(response.rows)
+    const updatedRows = rows.flatMap((row)=>{
+      return {
+        id: row.post_id,
+        name: "Test note 3",
+        updated_at: "1697900809", // unix timestamp
+        author_id: row.user_id,
+        content: row.post
+            } 
+    })
+    console.log(updatedRows) 
+    return res.status(200).json({ todos: updatedRows });
+ } catch (err) {
+    console.error(err);
+    return res.status(500).json({error : "Error connecting to database"})
+ } finally {
+    await client.end()
+ }
+
+
+
   // TODO https://node-postgres.com/features/queries Check out this documentation page for using their query builder to avoid injection avenues.
   
   // This is a big block of test data in place of a db query result
@@ -32,7 +62,7 @@ export default async function handler(
   
   TODO Lastly, I changed this function to be async up at the top since it'll want to be using async/await to block intelligently on the db calls
   */
-  const notes = [
+  const notes1 = [
     {
       id: "1234abcd",
       name: "Test note 1",
@@ -60,5 +90,5 @@ export default async function handler(
   ];
 
   // And we return the data with a 200 status
-  res.status(200).json({ todos: notes });
+  res.status(200).json({ todos: notes1 });
 }
