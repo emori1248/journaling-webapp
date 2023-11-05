@@ -33,8 +33,8 @@ export default async function handler(
     const updatedRows = rows.flatMap((row)=>{
       return {
         id: row.post_id,
-        name: "Test note 3",
-        updated_at: "1697900809", // unix timestamp
+        name: row.post_title,
+        updated_at: row.post_date,
         author_id: row.user_id,
         content: row.post
             } 
