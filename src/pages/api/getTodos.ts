@@ -1,4 +1,4 @@
-import { TodosResponseData, getTodos } from "@/api/todos";
+import { TodosListResponseData, getTodos } from "@/api/todos";
 import { getAuth } from "@clerk/nextjs/server";
 import type { NextApiRequest, NextApiResponse } from "next";
 import {Client} from "pg"
@@ -7,7 +7,7 @@ require('dotenv').config()
 export default async function handler(
   req: NextApiRequest,
   // The type for the response is defined in src/api/todos.ts with the query functions
-  res: NextApiResponse<TodosResponseData>
+  res: NextApiResponse<TodosListResponseData>
 ) {
   // this gets the clerk userid from the user's request headers
   const { userId } = getAuth(req);

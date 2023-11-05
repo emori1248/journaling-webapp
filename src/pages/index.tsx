@@ -1,6 +1,6 @@
 // import { Inter } from "next/font/google";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTodos, postTodo } from "@/api/todos";
+import { getTodos, addTodo } from "@/api/todos";
 import React from "react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ export default function Home() {
   const query = useQuery({ queryKey: ["todos"], queryFn: getTodos });
 
   const mutation = useMutation({
-    mutationFn: postTodo,
+    mutationFn: addTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
@@ -35,7 +35,7 @@ export default function Home() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    mutation.mutate({ ...data });
+    mutation.mutate();
   };
 
   console.log(watch("test"))

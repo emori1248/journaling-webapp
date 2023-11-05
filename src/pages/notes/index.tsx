@@ -1,4 +1,4 @@
-import { getTodos } from "@/api/todos";
+import { addTodo, getTodos } from "@/api/todos";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -15,6 +15,13 @@ export default function NotesPage() {
 
   const query = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
 
+  const mutation = useMutation({
+    mutationFn: addTodo,
+    onSuccess: () => {
+      alert("created")
+    },
+  });
+
   // TODO
   if (!query.data) {
     return;
@@ -25,11 +32,46 @@ export default function NotesPage() {
   // TODO
   if (!todos) return;
 
+  // const todos = [
+  //   {
+  //     id: "1234abcd",
+  //     name: "Test note 1",
+  //     updated_at: "1697900803", // unix timestamp
+  //     author_id: "TESTING_ID",
+  //     content:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  //   },
+  //   {
+  //     id: "5678efgh",
+  //     name: "Test note 2",
+  //     updated_at: "1697900806", // unix timestamp
+  //     author_id: "TESTING_ID",
+  //     content:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  //   },
+  //   {
+  //     id: "5678efghi",
+  //     name: "Test note 3",
+  //     updated_at: "1697900809", // unix timestamp
+  //     author_id: "TESTING_ID",
+  //     content:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  //   },
+  // ];
+
   return (
     <main className="bg-slate-300 h-screen">
-      <div className="pt-4 px-8 w-screen flex justify-end">
+      <div className="pt-4 px-8 w-screen flex justify-end space-x-4">
         <button
-          className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white transition text-slate-900 text-xl rounded-md shadow-md"
+          className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-400 hover:bg-sky-500 shadow-md"
+          onClick={() => {
+            mutation.mutate()
+          }}
+        >
+          New Note
+        </button>
+        <button
+          className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white text-slate-900 text-xl rounded-md shadow-md"
           onClick={() => {
             confirm("Are you sure you want to log out?");
           }}
