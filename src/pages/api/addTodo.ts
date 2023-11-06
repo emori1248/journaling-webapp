@@ -36,8 +36,8 @@ export default async function handler(
     const query = {
       // give the query a unique name
       name: 'create-empty-todo',
-      text: 'INSERT INTO public.posts(post_title, user_id, post, post_id) VALUES($1, $2, $3, $4)',
-      values: ["New Note", userId, "", 300],
+      text: 'INSERT INTO public.posts(post_title, user_id, post, post_id) VALUES($1, $2, $3, DEFAULT)',
+      values: ["New Note", userId, ""],
     }
 
     // Should only ever be one row created by this query
