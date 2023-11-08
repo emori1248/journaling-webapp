@@ -9,9 +9,31 @@ export type TodosListResponseData = {
   error?: string;
 };
 
+export type TodoResponseData = {
+  todo?: {
+    id: string;
+    name: string;
+    updated_at: string;
+    author_id: string;
+    content: string;
+  };
+  error?: string;
+};
+
 export async function getTodos() {
   const result = await fetch("/api/getTodos");
   return JSON.parse(await result.text()) as TodosListResponseData;
+}
+
+export async function getTodoById(id: string) {
+  const result = await fetch("/api/getTodoById", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  return JSON.parse(await result.text()) as TodoResponseData;
 }
 
 export async function addTodo() {

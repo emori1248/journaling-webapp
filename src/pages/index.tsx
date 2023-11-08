@@ -1,8 +1,8 @@
 // import { Inter } from "next/font/google";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTodos, addTodo } from "@/api/todos";
+import { useQueryClient } from "@tanstack/react-query";
+// import { getTodos, addTodo, getTodoById } from "@/api/todos";
 import React from "react";
-import { useState } from "react";
+// import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SignInButton, SignOutButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
@@ -12,14 +12,14 @@ import Link from "next/link";
 export default function Home() {
   const queryClient = useQueryClient();
 
-  const query = useQuery({ queryKey: ["todos"], queryFn: getTodos });
+  // const query = useQuery({ queryKey: ["todoById"], queryFn: getTodoById });
 
-  const mutation = useMutation({
-    mutationFn: addTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationFn: addTodo,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["todos"] });
+  //   },
+  // });
 
   type Inputs = {
     test: string;
@@ -35,7 +35,7 @@ export default function Home() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    mutation.mutate();
+    // mutation.mutate();
   };
 
   console.log(watch("test"))
