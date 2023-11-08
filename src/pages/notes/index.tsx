@@ -32,6 +32,41 @@ export default function NotesPage() {
   // TODO
   if (!todos) return;
 
+  function NoteListItem({id, name, updated_at} : {id: string, name: string, updated_at: string}) {
+    return (
+      <div className="border-b-2 border-slate-200 hover:bg-slate-300 last:border-b-0 px-2 py-1 rounded-md transition">
+        <li key={id}>
+          <div className="flex justify-between">
+            <div className="w-full">
+              <Link href={`/notes/${id}`}>
+                <div className="flex space-x-6 align-bottom w-full">
+                  <h3 className="font-semibold text-2xl">
+                    {name}
+                  </h3>
+                  <span className="flex text-slate-400 italic justify-items-end text-lg">
+                    Last edited:{" "}
+                    {dayjs().from(dayjs(parseInt(updated_at)))}
+                  </span>
+                </div>
+              </Link>
+            </div>
+
+            <button
+              onClick={() =>
+                confirm(
+                  `Are you sure you want to delete "${name}?"`
+                )
+              }
+              className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl"
+            >
+              <BsFillTrashFill />
+            </button>
+          </div>
+        </li>
+      </div>
+    );
+
+  }
 
   return (
     <main className="bg-slate-300 h-screen">
@@ -57,38 +92,7 @@ export default function NotesPage() {
         <div className="w-full h-full bg-slate-100 rounded-lg shadow-md p-2">
           <ul className="w-full">
             {todos.flatMap((note) => {
-              return (
-                <div className="border-b-2 border-slate-200 hover:bg-slate-300 last:border-b-0 px-2 py-1 rounded-md transition">
-                  <li key={note.id}>
-                    <div className="flex justify-between">
-                      <div className="w-full">
-                        <Link href={`/notes/${note.id}`}>
-                          <div className="flex space-x-6 align-bottom w-full">
-                            <h3 className="font-semibold text-2xl">
-                              {note.name}
-                            </h3>
-                            <span className="flex text-slate-400 italic justify-items-end text-lg">
-                              Last edited:{" "}
-                              {dayjs().from(dayjs(parseInt(note.updated_at)))}
-                            </span>
-                          </div>
-                        </Link>
-                      </div>
-
-                      <button
-                        onClick={() =>
-                          confirm(
-                            `Are you sure you want to delete "${note.name}?"`
-                          )
-                        }
-                        className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl"
-                      >
-                        <BsFillTrashFill />
-                      </button>
-                    </div>
-                  </li>
-                </div>
-              );
+              return <NoteListItem id={note.id} name={note.name} updated_at={note.updated_at} key={note.id}/>
             })}
           </ul>
         </div>
