@@ -34,7 +34,7 @@ export default function NotesPage() {
 
   function NoteListItem({id, name, updated_at} : {id: string, name: string, updated_at: string}) {
     return (
-      <div className="border-b-2 border-slate-200 hover:bg-slate-300 last:border-b-0 px-2 py-1 rounded-md transition">
+      <div className="border-b-2 border-slate-200 hover:bg-slate-300 last:border-b-0 px-2 py-1 rounded-md">
         <li key={id}>
           <div className="flex justify-between">
             <div className="w-full">
