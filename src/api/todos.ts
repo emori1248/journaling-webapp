@@ -9,6 +9,13 @@ export type TodosListResponseData = {
   error?: string;
 };
 
+export type deleteTodoData = {
+  todo?: {
+    content: string
+  }
+  error?: string;
+}
+
 export type TodoResponseData = {
   todo?: {
     id: string;
@@ -23,6 +30,11 @@ export type TodoResponseData = {
 export async function getTodos() {
   const result = await fetch("/api/getTodos");
   return JSON.parse(await result.text()) as TodosListResponseData;
+}
+
+export async function deleteTodo() {
+  const result = await fetch("/api/deleteTodo")
+  return JSON.parse(await result.text()) as deleteTodoData;
 }
 
 export async function getTodoById(id: string) {
