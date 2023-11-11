@@ -1,4 +1,4 @@
-import { addTodo, getTodos } from "@/api/todos";
+import { addTodo, deleteTodo, getTodos } from "@/api/todos";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -11,16 +11,28 @@ import { BsFillTrashFill } from "react-icons/bs";
 dayjs.extend(relativeTime);
 
 export default function NotesPage() {
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const query = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
 
-  const mutation = useMutation({
+  const addMutation = useMutation({
     mutationFn: addTodo,
     onSuccess: (data) => {
-      router.push(`/notes/${JSON.parse(data).todo.id}`)
+      router.push(`/notes/${JSON.parse(data).todo.id}`);
     },
   });
+
+  const deleteMutation = useMutation(
+    (id: string) => {
+      return deleteTodo(id);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["getTodos"] });
+      },
+    }
+  );
 
   // TODO
   if (!query.data) {
@@ -32,7 +44,15 @@ export default function NotesPage() {
   // TODO
   if (!todos) return;
 
-  function NoteListItem({id, name, updated_at} : {id: string, name: string, updated_at: string}) {
+  function NoteListItem({
+    id,
+    name,
+    updated_at,
+  }: {
+    id: string;
+    name: string;
+    updated_at: string;
+  }) {
     return (
       <div className="border-b-2 border-slate-200 hover:bg-slate-300 last:border-b-0 px-2 py-1 rounded-md">
         <li key={id}>
@@ -40,23 +60,19 @@ export default function NotesPage() {
             <div className="w-full">
               <Link href={`/notes/${id}`}>
                 <div className="flex space-x-6 align-bottom w-full">
-                  <h3 className="font-semibold text-2xl">
-                    {name}
-                  </h3>
+                  <h3 className="font-semibold text-2xl">{name}</h3>
                   <span className="flex text-slate-400 italic justify-items-end text-lg">
-                    Last edited:{" "}
-                    {dayjs().from(dayjs(parseInt(updated_at)))}
+                    Last edited: {dayjs().from(dayjs(parseInt(updated_at)))}
                   </span>
                 </div>
               </Link>
             </div>
 
             <button
-              onClick={() =>
-                confirm(
-                  `Are you sure you want to delete "${name}?"`
-                )
-              }
+              onClick={() => {
+                // confirm(`Are you sure you want to delete "${name}?"`);
+                deleteMutation.mutate(id);
+              }}
               className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl"
             >
               <BsFillTrashFill />
@@ -65,7 +81,6 @@ export default function NotesPage() {
         </li>
       </div>
     );
-
   }
 
   return (
@@ -74,7 +89,7 @@ export default function NotesPage() {
         <button
           className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-400 hover:bg-sky-500 shadow-md"
           onClick={() => {
-            mutation.mutate()
+            addMutation.mutate();
           }}
         >
           New Note
@@ -92,7 +107,14 @@ export default function NotesPage() {
         <div className="w-full h-full bg-slate-100 rounded-lg shadow-md p-2">
           <ul className="w-full">
             {todos.flatMap((note) => {
-              return <NoteListItem id={note.id} name={note.name} updated_at={note.updated_at} key={note.id}/>
+              return (
+                <NoteListItem
+                  id={note.id}
+                  name={note.name}
+                  updated_at={note.updated_at}
+                  key={note.id}
+                />
+              );
             })}
           </ul>
         </div>

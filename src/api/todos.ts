@@ -10,9 +10,6 @@ export type TodosListResponseData = {
 };
 
 export type deleteTodoData = {
-  todo?: {
-    content: string
-  }
   error?: string;
 }
 
@@ -32,8 +29,14 @@ export async function getTodos() {
   return JSON.parse(await result.text()) as TodosListResponseData;
 }
 
-export async function deleteTodo() {
-  const result = await fetch("/api/deleteTodo")
+export async function deleteTodo(id: string) {
+  const result = await fetch("/api/deleteTodo", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  })
   return JSON.parse(await result.text()) as deleteTodoData;
 }
 

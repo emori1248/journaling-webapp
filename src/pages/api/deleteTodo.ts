@@ -33,18 +33,9 @@ export default async function handler(
       values: [userId, postId],
     };
 
-    // There should never be more than one post with the same id,
-    // and we don't care which we get if there is more than one.
-    const row = (await client.query(query)).rows[0]; 
+    await client.query(query);
 
-    const updatedRow = {
-      id: row.post_id,
-      name: row.post_title,
-      updated_at: row.post_date,
-      author_id: row.user_id,
-      content: row.post,
-    };
-    return res.status(200).json({ todo: updatedRow });
+    return res.status(200).json({});
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error connecting to database" });
