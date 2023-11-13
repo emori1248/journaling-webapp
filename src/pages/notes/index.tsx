@@ -6,7 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { BsFillTrashFill } from "react-icons/bs";
+import {
+  BsFillTrashFill,
+  BsPlusCircle,
+  BsArrowRightShort,
+} from "react-icons/bs";
 
 dayjs.extend(relativeTime);
 
@@ -39,7 +43,7 @@ export default function NotesPage() {
     return;
   }
 
-  const { todos } = query.data;
+  var { todos } = query.data;
 
   // TODO
   if (!todos) return;
@@ -83,16 +87,22 @@ export default function NotesPage() {
     );
   }
 
+  todos = [];
   return (
     <main className="bg-slate-300 h-screen">
       <div className="pt-4 px-8 w-screen flex justify-end space-x-4">
         <button
-          className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-400 hover:bg-sky-500 shadow-md"
+          className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-400 hover:bg-sky-500 shadow-md whitespace-nowrap overflow-hidden"
           onClick={() => {
             addMutation.mutate();
           }}
         >
-          New Note
+          <div className="flex flex-row space-x-2">
+            <span>New Note</span>
+            <span className="relative top-1">
+              <BsPlusCircle />
+            </span>
+          </div>
         </button>
         <button
           className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white text-slate-900 text-xl rounded-md shadow-md"
@@ -106,16 +116,27 @@ export default function NotesPage() {
       <div className="w-screen h-auto bg-slate-300 text-slate-900 flex justify-center p-8 pt-4">
         <div className="w-full h-full bg-slate-100 rounded-lg shadow-md p-2">
           <ul className="w-full">
-            {todos.flatMap((note) => {
-              return (
-                <NoteListItem
-                  id={note.id}
-                  name={note.name}
-                  updated_at={note.updated_at}
-                  key={note.id}
-                />
-              );
-            })}
+            {todos.length > 0 ? (
+              todos.flatMap((note) => {
+                return (
+                  <NoteListItem
+                    id={note.id}
+                    name={note.name}
+                    updated_at={note.updated_at}
+                    key={note.id}
+                  />
+                );
+              })
+            ) : (
+              <div className="px-3">
+                <h3 className="font-semibold text-2xl flex flex-row">
+                  <span>Create a note to get started!</span>
+                  <span className="relative top-[2px] text-3xl">
+                    <BsArrowRightShort />
+                  </span>
+                </h3>
+              </div>
+            )}
           </ul>
         </div>
       </div>
