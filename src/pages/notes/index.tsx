@@ -65,7 +65,7 @@ export default function NotesPage() {
               <Link href={`/notes/${id}`}>
                 <div className="flex space-x-6 align-bottom w-full">
                   <h3 className="font-semibold text-2xl">{name}</h3>
-                  <span className="flex text-slate-400 italic justify-items-end text-lg">
+                  <span className="relative top-1 text-slate-400 italic justify-items-end text-lg">
                     Last edited: {dayjs().from(dayjs(parseInt(updated_at)))}
                   </span>
                 </div>
@@ -74,7 +74,7 @@ export default function NotesPage() {
 
             <button
               onClick={() => {
-                // confirm(`Are you sure you want to delete "${name}?"`);
+                confirm(`Are you sure you want to delete "${name}?"`);
                 deleteMutation.mutate(id);
               }}
               className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl"
@@ -87,7 +87,6 @@ export default function NotesPage() {
     );
   }
 
-  todos = [];
   return (
     <main className="bg-slate-300 h-screen">
       <div className="pt-4 px-8 w-screen flex justify-end space-x-4">
