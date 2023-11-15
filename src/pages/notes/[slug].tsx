@@ -1,13 +1,17 @@
-import { getTodoById } from "@/api/todos";
+import { getTodoById, getTodos } from "@/api/todos";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export default function NotePage() {
+  const listQuery = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
   const router = useRouter();
 
   if (!router.isReady) return;
+
+  if (!listQuery.data) return;
 
   const slug = router.query.slug;
   console.log(slug);
@@ -71,6 +75,25 @@ export default function NotePage() {
     );
   }
 
+  function NoteListItem({ id, name, isActive }: { id: string; name: string; isActive: boolean }) {
+    return (
+      <div className={`border-b-2 ${isActive ? "bg-slate-200" : ""} border-slate-200 last:border-0 px-2 py-1 rounded-md hover:bg-slate-200`}>
+
+      <Link href={`/notes/${id}`} >
+        <li key={id} className="flex justify-between">
+          <span className="text-lg">{name}</span>
+        </li>
+      </Link>
+      </div>
+    );
+  }
+
+  const { todos } = listQuery.data;
+
+  if (!todos) return;
+
+  console.log(todos);
+
   return (
     <main className="bg-slate-300 h-screen">
       <div className="pt-4 px-8 w-screen flex justify-end">
@@ -83,7 +106,21 @@ export default function NotePage() {
           Log Out
         </button>
       </div>
-      <div className="w-screen h-[90%] bg-slate-300 text-slate-900 flex justify-center p-8 pt-4">
+      <div className="w-screen h-[90%] bg-slate-300 text-slate-900 flex justify-center p-8 pt-4 space-x-4">
+        <div className="w-64 bg-slate-100 rounded-lg shadow-md p-2">
+          <ul>
+            {todos.flatMap((note) => {
+              return (
+                <NoteListItem
+                  id={note.id}
+                  name={note.name}
+                  isActive={parseInt(note.id) === parseInt(slug as string)}
+                  key={note.id}
+                />
+              );
+            })}
+          </ul>
+        </div>
         <div className="w-full bg-slate-100 rounded-lg shadow-md p-2">
           <NoteForm />
         </div>
