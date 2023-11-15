@@ -17,9 +17,13 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  
   // Get the post id from the body
   // If the post id is garbage, it will simply fail on the prepared statement below.
   const postId = req.body.id;
+  if(!postId) {
+    return res.status(400).json({ error: "Bad Request: No Post Id" });
+  }
 
   const conString = process.env.DB_CONNECTION_STRING;
   const client = new Client({ connectionString: conString });
@@ -35,16 +39,19 @@ export default async function handler(
 
     // There should never be more than one post with the same id,
     // and we don't care which we get if there is more than one.
-    const row = (await client.query(query)).rows[0]; 
+    const row = (await client.query(query)).rows[0];
 
-    const updatedRow = {
-      id: row.post_id,
-      name: row.post_title,
-      updated_at: row.post_date,
-      author_id: row.user_id,
-      content: row.post,
-    };
-    return res.status(200).json({ todo: updatedRow });
+    return res
+      .status(200)
+      .json({
+        todo: {
+          author_id: row.user_id,
+          content: row.post,
+          id: row.post_id,
+          name: row.post_title,
+          updated_at: row.post_date,
+        },
+      });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error connecting to database" });
