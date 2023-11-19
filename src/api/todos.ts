@@ -58,16 +58,13 @@ export async function addTodo() {
   return await result.text();
 }
 
-export async function updateTodo({
-  test,
-  testRequired,
-}: {
-  test: string;
-  testRequired: string;
-}) {
+export async function updateTodo(id: string, content: string, name: string) {
   const result = await fetch("/api/updateTodo", {
-    method: "PUT",
-    body: JSON.stringify({ test, testRequired }),
-  });
-  return await result.text();
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, content, name }),
+  })
+  return JSON.parse(await result.text()) as deleteTodoData;
 }

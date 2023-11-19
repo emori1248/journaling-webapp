@@ -1,5 +1,5 @@
-import { getTodoById, getTodos } from "@/api/todos";
-import { useQuery } from "@tanstack/react-query";
+import { getTodoById, getTodos, updateTodo } from "@/api/todos";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -17,9 +17,31 @@ export default function NotePage() {
   console.log(slug);
 
   function NoteForm() {
+    const queryClient = useQueryClient();
+
     const query = useQuery(["todoById", slug], () =>
       getTodoById(slug as string)
     ); // TODO change this force cast later
+
+    const updateMutation = useMutation(
+      ({
+        id,
+        content,
+        name,
+      }: {
+        id: string;
+        content: string;
+        name: string;
+      }) => {
+        return updateTodo(id, content, name);
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["getTodos"] });
+          queryClient.invalidateQueries({ queryKey: ["todoById"] });
+        },
+      }
+    );
 
     type PostInputs = {
       name: string;
@@ -28,7 +50,11 @@ export default function NotePage() {
 
     const onSubmit: SubmitHandler<PostInputs> = (data) => {
       console.log({ ...data, id: router.query.slug });
-      // mutation.mutate({ ...data });
+      updateMutation.mutate({
+        content: data.content,
+        id: router.query.slug as string,
+        name: data.name,
+      });
     };
 
     const {
@@ -75,15 +101,26 @@ export default function NotePage() {
     );
   }
 
-  function NoteListItem({ id, name, isActive }: { id: string; name: string; isActive: boolean }) {
+  function NoteListItem({
+    id,
+    name,
+    isActive,
+  }: {
+    id: string;
+    name: string;
+    isActive: boolean;
+  }) {
     return (
-      <div className={`border-b-2 ${isActive ? "bg-slate-200" : ""} border-slate-200 last:border-0 px-2 py-1 rounded-md hover:bg-slate-200`}>
-
-      <Link href={`/notes/${id}`} >
-        <li key={id} className="flex justify-between">
-          <span className="text-lg">{name}</span>
-        </li>
-      </Link>
+      <div
+        className={`border-b-2 ${
+          isActive ? "bg-slate-200" : ""
+        } border-slate-200 last:border-0 px-2 py-1 rounded-md hover:bg-slate-200`}
+      >
+        <Link href={`/notes/${id}`}>
+          <li key={id} className="flex justify-between">
+            <span className="text-lg">{name}</span>
+          </li>
+        </Link>
       </div>
     );
   }

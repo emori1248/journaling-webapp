@@ -19,6 +19,8 @@ export default async function handler(
   // Get the post id from the body
   // If the post id is garbage, it will simply fail on the prepared statement below.
   const postId = req.body.id;
+  const content = req.body.content;
+  const name = req.body.name;
 
   const conString = process.env.DB_CONNECTION_STRING;
   const client = new Client({ connectionString: conString });
@@ -27,9 +29,9 @@ export default async function handler(
   try {
     const query = {
       // give the query a unique name
-      name: "delete-post-by-id",
-      text: "DELETE FROM public.posts WHERE user_id = $1 AND post_id = $2",
-      values: [userId, postId],
+      name: "update-post",
+      text: "UPDATE public.posts SET post = $1, post_title = $2 WHERE post_id = $3 AND user_id = $4",
+      values: [content, name, postId, userId],
     };
 
     await client.query(query);
