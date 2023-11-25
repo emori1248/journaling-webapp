@@ -1,13 +1,26 @@
-import { getTodoById, getTodos, updateTodo } from "@/api/todos";
+import { deleteTodo, getTodoById, getTodos, updateTodo } from "@/api/todos";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { BsFillTrashFill } from "react-icons/bs";
 
 export default function NotePage() {
   const listQuery = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
   const router = useRouter();
+
+  const deleteMutation = useMutation(
+    (id: string) => {
+      return deleteTodo(id);
+    },
+    {
+      onSuccess: () => {
+        // queryClient.invalidateQueries({ queryKey: ["getTodos"] });
+        router.push("/notes") //TODO change to a better redirect behavior
+      },
+    }
+  );
 
   if (!router.isReady) return;
 
@@ -15,6 +28,8 @@ export default function NotePage() {
 
   const slug = router.query.slug;
   console.log(slug);
+
+
 
   function NoteForm() {
     const queryClient = useQueryClient();
@@ -119,6 +134,14 @@ export default function NotePage() {
         <Link href={`/notes/${id}`}>
           <li key={id} className="flex justify-between">
             <span className="text-lg">{name}</span>
+            {isActive ? 
+            <button onClick={() => {
+              //TODO confirm button
+              deleteMutation.mutate(id)
+            }}>
+              <BsFillTrashFill />
+            </button>
+             : <></>}
           </li>
         </Link>
       </div>
