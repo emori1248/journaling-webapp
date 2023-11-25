@@ -75,6 +75,7 @@ export default function NotePage() {
     const {
       register,
       handleSubmit,
+      watch,
       formState: { errors },
     } = useForm<PostInputs>();
 
@@ -88,7 +89,10 @@ export default function NotePage() {
     if (!todo) return;
 
     //console.log(todo);
-
+    const str : string = watch("content")
+    const postLength = str ? str.length : 0;
+    const MAX_POST_LENGTH = 1000;
+    
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -105,6 +109,11 @@ export default function NotePage() {
           className="border-none rounded-md h-full resize-none p-2 focus:outline-none"
         />
         <div className="flex justify-end">
+          <div className="px-4 py-2 text-xl">
+            <span className={postLength > MAX_POST_LENGTH ? "text-red-600" : ""}>
+            {postLength}/{MAX_POST_LENGTH}
+            </span>
+            </div>
           <button
             type="submit"
             className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md"
