@@ -1,10 +1,22 @@
-import { addTodo, deleteTodo, getTodoById, getTodos, updateTodo } from "@/api/todos";
+import {
+  addTodo,
+  deleteTodo,
+  getTodoById,
+  getTodos,
+  updateTodo,
+} from "@/api/todos";
+import { UserButton } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { BsArrowLeftShort, BsFillTrashFill, BsPlus, BsPlusCircle } from "react-icons/bs";
+import {
+  BsArrowLeftShort,
+  BsFillTrashFill,
+  BsPlus,
+  BsPlusCircle,
+} from "react-icons/bs";
 
 export default function NotePage() {
   const listQuery = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
@@ -190,14 +202,9 @@ export default function NotePage() {
             Back
           </button>
         </Link>
-        <button
-          className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white hover:shadow-md text-slate-900 text-xl rounded-md shadow-md"
-          onClick={() => {
-            confirm("Are you sure you want to log out?");
-          }}
-        >
-          Log Out
-        </button>
+        <div className="bg-slate-100 p-2 rounded-3xl shadow-md">
+          <UserButton afterSignOutUrl="/"/>
+        </div>
       </div>
       <div className="w-screen h-[90%] bg-slate-300 text-slate-900 flex justify-center p-8 pt-4 space-x-4">
         <div className="w-64 bg-slate-100 rounded-lg shadow-md p-2">
@@ -220,7 +227,7 @@ export default function NotePage() {
                   }}
                 >
                   <div className="text-slate-600 px-1 rounded-sm text-2xl">
-                  <BsPlus />
+                    <BsPlus />
                   </div>
                 </button>
               </div>
