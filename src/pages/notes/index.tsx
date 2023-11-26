@@ -112,8 +112,8 @@ export default function NotesPage() {
         >
           Log Out
         </button> */}
-                <div className="bg-slate-100 p-2 rounded-3xl shadow-md">
-          <UserButton afterSignOutUrl="/"/>
+        <div className="bg-slate-100 p-2 rounded-3xl shadow-md">
+          <UserButton afterSignOutUrl="/" />
         </div>
       </div>
       <div className="w-screen h-auto bg-slate-300 text-slate-900 flex justify-center p-8 pt-4">

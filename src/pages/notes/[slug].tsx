@@ -15,7 +15,6 @@ import {
   BsArrowLeftShort,
   BsFillTrashFill,
   BsPlus,
-  BsPlusCircle,
 } from "react-icons/bs";
 
 export default function NotePage() {
@@ -56,7 +55,7 @@ export default function NotePage() {
 
     const query = useQuery(["todoById", slug], () =>
       getTodoById(slug as string)
-    ); // TODO change this force cast later
+    );
 
     const updateMutation = useMutation(
       ({
@@ -108,7 +107,6 @@ export default function NotePage() {
     // TODO
     if (!todo) return;
 
-    //console.log(todo);
     const str: string = watch("content");
     const postLength = str ? str.length : 0;
     const MAX_POST_LENGTH = 1000;
@@ -129,7 +127,8 @@ export default function NotePage() {
           className="border-none rounded-md h-full resize-none p-2 focus:outline-none"
         />
         <div className="flex justify-end">
-          <div className="px-4 py-2 text-xl">
+          <div className="px-4 py-2 text-xl space-x-2">
+          {(errors.name || errors.content) && <span className="text-red-600">Title and content are required</span>}
             <span
               className={postLength > MAX_POST_LENGTH ? "text-red-600" : ""}
             >
@@ -160,16 +159,18 @@ export default function NotePage() {
       <div
         className={`border-b-2 ${
           isActive ? "bg-slate-200" : ""
-        } border-slate-200 last:border-0 rounded-md px-1 hover:bg-slate-200`}
+        } border-slate-200 last:border-0 first:rounded-t-md last-of-type:rounded-b-md px-1 hover:bg-slate-200`}
       >
         <Link href={`/notes/${id}`}>
           <li key={id} className="flex justify-between">
             <span className="text-lg px-2 py-1">{name}</span>
             {isActive ? (
               <button
-                onClick={() => {
+                onClick={(e) => {
                   //TODO confirm button
-                  deleteMutation.mutate(id);
+                  e.preventDefault();
+                  if (confirm(`Are you sure you want to delete "${name}"?`))
+                    deleteMutation.mutate(id);
                 }}
               >
                 <div className="text-slate-600 hover:text-red-600 px-2 py-1 rounded-sm">
@@ -203,7 +204,7 @@ export default function NotePage() {
           </button>
         </Link>
         <div className="bg-slate-100 p-2 rounded-3xl shadow-md">
-          <UserButton afterSignOutUrl="/"/>
+          <UserButton afterSignOutUrl="/" />
         </div>
       </div>
       <div className="w-screen h-[90%] bg-slate-300 text-slate-900 flex justify-center p-8 pt-4 space-x-4">
