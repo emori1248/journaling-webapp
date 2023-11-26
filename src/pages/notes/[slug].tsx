@@ -11,11 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  BsArrowLeftShort,
-  BsFillTrashFill,
-  BsPlus,
-} from "react-icons/bs";
+import { BsArrowLeftShort, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 export default function NotePage() {
   const listQuery = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
@@ -128,7 +124,11 @@ export default function NotePage() {
         />
         <div className="flex justify-end">
           <div className="px-4 py-2 text-xl space-x-2">
-          {(errors.name || errors.content) && <span className="text-red-600">Title and content are required</span>}
+            {(errors.name || errors.content) && (
+              <span className="text-red-600">
+                Title and content are required
+              </span>
+            )}
             <span
               className={postLength > MAX_POST_LENGTH ? "text-red-600" : ""}
             >
@@ -137,13 +137,57 @@ export default function NotePage() {
           </div>
           <button
             type="submit"
-            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md"
+            disabled={updateMutation.isLoading}
+            className={`border-slate-600 px-4 py-2 text-xl rounded-lg ${
+              updateMutation.isLoading
+                ? "bg-slate-300"
+                : "bg-sky-300 hover:bg-sky-400"
+            } shadow-md`}
           >
             Submit Entry
           </button>
         </div>
       </form>
     );
+  }
+
+  // TODO allow submit button to work with form from outside, potentially needs to be given formcontext
+  function SubmitButton({formState} : {formState: "default" | "loading" | "complete"}) {
+    switch (formState) {
+      case "default": {
+        return (
+          <button
+            type="submit"
+            disabled={true}
+            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md"
+          >
+            Submit Entry
+          </button>
+        );
+      }
+      case "loading": {
+        return (
+          <button
+            type="submit"
+            disabled={true}
+            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-slate-300 shadow-md"
+          >
+            Submit Entry
+          </button>
+        );
+      }
+      case "complete": {
+        return (
+          <button
+            type="submit"
+            disabled={true}
+            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md"
+          >
+            Submit Entry
+          </button>
+        );
+      }
+    }
   }
 
   function NoteListItem({
