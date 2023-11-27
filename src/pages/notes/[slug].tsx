@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import { BsArrowLeftShort, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 export default function NotePage() {
@@ -66,9 +66,13 @@ export default function NotePage() {
         return updateTodo(id, content, name);
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           queryClient.invalidateQueries({ queryKey: ["getTodos"] });
           queryClient.invalidateQueries({ queryKey: ["todoById"] });
+          // Delay to reset mutation state
+          setTimeout(() => {
+            updateMutation.reset();
+          }, 1000);
         },
       }
     );
@@ -107,9 +111,22 @@ export default function NotePage() {
     const postLength = str ? str.length : 0;
     const MAX_POST_LENGTH = 1000;
 
+    const buttonStyle = `border-slate-600 px-4 py-2 text-xl rounded-lg ${
+      updateMutation.isLoading
+        ? "bg-slate-300 hover:bg-slate-300"
+        : "bg-sky-300 hover:bg-sky-400"
+    }
+      ${
+        updateMutation.isSuccess
+          ? "bg-green-300 hover:bg-green-400"
+          : "bg-sky-300 hover:bg-sky-400"
+      }
+    shadow-md`;
+
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
+        id="note-form"
         className="flex flex-col h-full space-y-2"
       >
         <input
@@ -138,57 +155,16 @@ export default function NotePage() {
           <button
             type="submit"
             disabled={updateMutation.isLoading}
-            className={`border-slate-600 px-4 py-2 text-xl rounded-lg ${
-              updateMutation.isLoading
-                ? "bg-slate-300"
-                : "bg-sky-300 hover:bg-sky-400"
-            } shadow-md`}
+            className={buttonStyle}
           >
             Submit Entry
           </button>
+          {/* <SubmitButton formState="default" onSubmit={handleSubmit(onSubmit)}/> */}
         </div>
       </form>
     );
   }
 
-  // TODO allow submit button to work with form from outside, potentially needs to be given formcontext
-  function SubmitButton({formState} : {formState: "default" | "loading" | "complete"}) {
-    switch (formState) {
-      case "default": {
-        return (
-          <button
-            type="submit"
-            disabled={true}
-            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md"
-          >
-            Submit Entry
-          </button>
-        );
-      }
-      case "loading": {
-        return (
-          <button
-            type="submit"
-            disabled={true}
-            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-slate-300 shadow-md"
-          >
-            Submit Entry
-          </button>
-        );
-      }
-      case "complete": {
-        return (
-          <button
-            type="submit"
-            disabled={true}
-            className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md"
-          >
-            Submit Entry
-          </button>
-        );
-      }
-    }
-  }
 
   function NoteListItem({
     id,
