@@ -108,7 +108,7 @@ export default function NotePage() {
     if (!todo) return;
 
     const str: string = watch("content");
-    const postLength = str ? str.length : 0;
+    const postLength = str ? str.length : (query.data.todo?.content.length ?? 0);
     const MAX_POST_LENGTH = 1000;
 
     const buttonStyle = `border-slate-600 px-4 py-2 text-xl rounded-lg ${
