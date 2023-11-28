@@ -110,9 +110,10 @@ export default function NotePage() {
     const str: string = watch("content");
     const postLength = str ? str.length : (query.data.todo?.content.length ?? 0);
     const MAX_POST_LENGTH = 1000;
+    const postIsOverCharacterLimit = postLength > MAX_POST_LENGTH;
 
     const buttonStyle = `border-slate-600 px-4 py-2 text-xl rounded-lg ${
-      updateMutation.isLoading
+      updateMutation.isLoading || postIsOverCharacterLimit
         ? "bg-slate-300 hover:bg-slate-300"
         : "bg-sky-300 hover:bg-sky-400"
     }
@@ -154,7 +155,7 @@ export default function NotePage() {
           </div>
           <button
             type="submit"
-            disabled={updateMutation.isLoading}
+            disabled={updateMutation.isLoading || postIsOverCharacterLimit}
             className={buttonStyle}
           >
             Submit Entry
