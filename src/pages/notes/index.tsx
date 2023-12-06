@@ -80,7 +80,7 @@ export default function NotesPage() {
 
             <button
               onClick={() => {
-                confirm(`Are you sure you want to delete "${name}?"`);
+                if(confirm(`Are you sure you want to delete "${name}?"`))
                 deleteMutation.mutate(id);
               }}
               className="px-2 rounded-md hover:bg-red-500 hover:text-white text-xl"
