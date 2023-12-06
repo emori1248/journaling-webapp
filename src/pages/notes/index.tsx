@@ -89,7 +89,7 @@ export default function NotesPage() {
   }
 
   return (
-    <main className="bg-slate-300 h-screen">
+    <main className="bg-gradient-to-br from-slate-300 to-sky-200 h-screen">
       <div className="pt-4 px-8 w-screen flex justify-end space-x-4">
         <button
           className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-400 hover:bg-sky-500 shadow-md whitespace-nowrap overflow-hidden"
@@ -104,19 +104,11 @@ export default function NotesPage() {
             </span>
           </div>
         </button>
-        {/* <button
-          className="bg-slate-100 px-4 py-2 hover:bg-red-500 hover:text-white text-slate-900 text-xl rounded-md shadow-md"
-          onClick={() => {
-            confirm("Are you sure you want to log out?");
-          }}
-        >
-          Log Out
-        </button> */}
         <div className="bg-slate-100 p-2 rounded-3xl shadow-md">
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>
-      <div className="w-screen h-auto bg-slate-300 text-slate-900 flex justify-center p-8 pt-4">
+      <div className="w-screen h-auto text-slate-900 flex justify-center p-8 pt-4">
         <div className="w-full h-full bg-slate-100 rounded-lg shadow-md p-2">
           <ul className="w-full">
             {todos.length > 0 ? (

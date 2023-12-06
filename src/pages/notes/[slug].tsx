@@ -214,7 +214,7 @@ export default function NotePage() {
   console.log(todos);
 
   return (
-    <main className="bg-slate-300 h-screen">
+    <main className="bg-gradient-to-br from-slate-300 to-sky-200 h-screen">
       <div className="pt-4 px-8 w-screen flex justify-between">
         <Link href={"/notes"}>
           <button className="border-slate-600 px-4 py-2 text-xl rounded-lg bg-sky-300 hover:bg-sky-400 shadow-md text-black flex">
@@ -228,7 +228,7 @@ export default function NotePage() {
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>
-      <div className="w-screen h-[90%] bg-slate-300 text-slate-900 flex justify-center p-8 pt-4 space-x-4">
+      <div className="w-screen h-[90%]  text-slate-900 flex justify-center p-8 pt-4 space-x-4">
         <div className="w-64 bg-slate-100 rounded-lg shadow-md p-2">
           <ul>
             {todos.flatMap((note) => {

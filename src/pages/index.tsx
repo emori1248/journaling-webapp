@@ -41,7 +41,7 @@ export default function Home() {
 
   console.log(watch("test"));
   return (
-    <main className="flex flex-col items-center justify-center bg-gradient-to-br from-slate-200 to-sky-200 w-screen h-screen text-slate-900 space-y-16">
+    <main className="flex flex-col items-center justify-center bg-gradient-to-br from-slate-300 to-sky-200 w-screen h-screen text-slate-900 space-y-16">
       <span className="font-semibold text-5xl">Journaling App</span>
       <Link href={"/notes"}>
         <button className="text-2xl font-semibold bg-sky-300 p-4 rounded-xl">
