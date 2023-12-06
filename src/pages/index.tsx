@@ -10,7 +10,7 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center bg-gradient-to-br from-slate-300 to-sky-200 w-screen h-screen text-slate-900 space-y-16">
       <span className="font-semibold text-5xl">Journaling App</span>
       <Link href={"/notes"}>
-        <button className="text-2xl font-semibold bg-sky-300 p-4 rounded-xl">
+        <button className="text-2xl font-semibold bg-sky-300 px-6 py-4 rounded-xl shadow-md">
           <div className="flex">
 
             Get Started 
