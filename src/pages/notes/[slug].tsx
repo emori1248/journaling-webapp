@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { SubmitHandler, useForm, useFormContext } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { BsArrowLeftShort, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 export default function NotePage() {
@@ -24,8 +24,8 @@ export default function NotePage() {
     },
     {
       onSuccess: () => {
-        // queryClient.invalidateQueries({ queryKey: ["getTodos"] });
-        router.push("/notes"); //TODO change to a better redirect behavior
+        // Redirect user to notes list when a currently open note is deleted
+        router.push("/notes");
       },
     }
   );
@@ -33,8 +33,11 @@ export default function NotePage() {
   const addMutation = useMutation({
     mutationFn: addTodo,
     onSuccess: (data) => {
+      // Reset query cache whenever a new note is created
       queryClient.invalidateQueries({ queryKey: ["getTodos"] });
       queryClient.invalidateQueries({ queryKey: ["todoById"] });
+
+      // Redirect user to the new note page
       router.push(`/notes/${JSON.parse(data).todo.id}`);
     },
   });
@@ -44,14 +47,18 @@ export default function NotePage() {
   if (!listQuery.data) return;
 
   const slug = router.query.slug;
-  console.log(slug);
 
+  /*
+    Component containing form and submission logic
+  */
   function NoteForm() {
     const queryClient = useQueryClient();
 
     const query = useQuery(["todoById", slug], () =>
       getTodoById(slug as string)
     );
+
+    const TIMEOUT_BEFORE_MUTATION_SUCCESS_RESET_MS = 1000;
 
     const updateMutation = useMutation(
       ({
@@ -67,23 +74,25 @@ export default function NotePage() {
       },
       {
         onSuccess: async () => {
+          // Reset query cache whenever a note update occurs
           queryClient.invalidateQueries({ queryKey: ["getTodos"] });
           queryClient.invalidateQueries({ queryKey: ["todoById"] });
           // Delay to reset mutation state
           setTimeout(() => {
             updateMutation.reset();
-          }, 1000);
+          }, TIMEOUT_BEFORE_MUTATION_SUCCESS_RESET_MS);
         },
       }
     );
 
+    // Type for user-facing form inputs to enforce typesafety
     type PostInputs = {
       name: string;
       content: string;
     };
 
+    // On the form submit combine the user inputs with the note slug for the mutation endpoint
     const onSubmit: SubmitHandler<PostInputs> = (data) => {
-      console.log({ ...data, id: router.query.slug });
       updateMutation.mutate({
         content: data.content,
         id: router.query.slug as string,
@@ -104,14 +113,15 @@ export default function NotePage() {
 
     const { todo } = query.data;
 
-    // TODO
+    // If no todo is recieved return an empty page until content is supplied (which will not likely not be visible to user due to prefetching)
     if (!todo) return;
 
     const str: string = watch("content");
-    const postLength = str ? str.length : (query.data.todo?.content.length ?? 0);
+    const postLength = str ? str.length : query.data.todo?.content.length ?? 0;
     const MAX_POST_LENGTH = 1000;
     const postIsOverCharacterLimit = postLength > MAX_POST_LENGTH;
 
+    // The color of the submit button is determined by the state of the page here
     const buttonStyle = `border-slate-600 px-4 py-2 text-xl rounded-lg ${
       updateMutation.isLoading || postIsOverCharacterLimit
         ? "bg-slate-300 hover:bg-slate-300"
@@ -160,13 +170,14 @@ export default function NotePage() {
           >
             Submit Entry
           </button>
-          {/* <SubmitButton formState="default" onSubmit={handleSubmit(onSubmit)}/> */}
         </div>
       </form>
     );
   }
 
-
+  /*
+    Component for navigation list items in the sidebar.
+  */
   function NoteListItem({
     id,
     name,
@@ -188,7 +199,6 @@ export default function NotePage() {
             {isActive ? (
               <button
                 onClick={(e) => {
-                  //TODO confirm button
                   e.preventDefault();
                   if (confirm(`Are you sure you want to delete "${name}"?`))
                     deleteMutation.mutate(id);
@@ -209,9 +219,8 @@ export default function NotePage() {
 
   const { todos } = listQuery.data;
 
+  // If no todo is recieved return an empty page until content is supplied (which will not likely not be visible to user due to prefetching)
   if (!todos) return;
-
-  console.log(todos);
 
   return (
     <main className="bg-gradient-to-br from-slate-300 to-sky-200 h-screen">

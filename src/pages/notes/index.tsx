@@ -16,10 +16,14 @@ import {
 dayjs.extend(relativeTime);
 
 export default function NotesPage() {
+  // Query client for invalidating queries
   const queryClient = useQueryClient();
+
+  // Router for imperative redirecting
   const router = useRouter();
 
-  const query = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
+  // Define queries and mutations
+  const todosQuery = useQuery({ queryKey: ["getTodos"], queryFn: getTodos });
 
   const addMutation = useMutation({
     mutationFn: addTodo,
@@ -39,14 +43,14 @@ export default function NotesPage() {
     }
   );
 
-  // TODO
-  if (!query.data) {
+  // Return empty page if query data is malformed (should not occur)
+  if (!todosQuery.data) {
     return;
   }
 
-  var { todos } = query.data;
+  var { todos } = todosQuery.data;
 
-  // TODO
+  // Return empty page if query data is malformed (should not occur)
   if (!todos) return;
 
   function NoteListItem({
@@ -67,6 +71,7 @@ export default function NotesPage() {
                 <div className="flex space-x-6 align-bottom w-full">
                   <h3 className="font-semibold text-2xl">{name}</h3>
                   <span className="relative top-1 text-slate-400 italic justify-items-end text-lg">
+                    {/* Known issue with date conversion */}
                     Last edited: {dayjs().from(dayjs(parseInt(updated_at)))}
                   </span>
                 </div>
@@ -105,6 +110,7 @@ export default function NotesPage() {
           </div>
         </button>
         <div className="bg-slate-100 p-2 rounded-3xl shadow-md">
+          {/* Redirect user to splash page on signout */}
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>
